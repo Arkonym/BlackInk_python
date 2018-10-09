@@ -22,7 +22,10 @@ class NotificationWindow(Notification, BaseWidget):
             self._sendButton.value = self.__sendNotification
 
 
-        self._formset = 
+        self._formset =[' ', ('||', '_symbolField', '||', ' '), '=',
+                        ('||','_indexField', '||', ' '),
+                        ('||', '_messageField', '||'),
+                        ('||', '_sendButton', '||')]
 
     def __sendNotification(self):
         self._symbol = self._symbolField.value
@@ -30,4 +33,4 @@ class NotificationWindow(Notification, BaseWidget):
         self._message = self._indexField.value
         if self.parent!=None: self.parent.add_notification
 
-if __name__== "__main__": pyforms.start_app(NotificationWindow)
+if __name__== "__main__": pyforms.start_app(NotificationWindow, geometry=(400, 400, 600, 600))

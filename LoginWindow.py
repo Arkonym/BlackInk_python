@@ -1,25 +1,36 @@
 import pyforms
 from pyforms.basewidget import BaseWidget
-from pyforms.controls import ControlDockWidget, ControlText, ControlButton
-from DB_Actions import db_connect, login, post_notification
+from pyforms.controls import ControlText, ControlButton
+from DB_Actions import db_connect, login
 from ControlPasswordText import ControlPasswordText
 
 
 class loginWidget(BaseWidget):
-    def __init__(self):
-        super(BlackInkBE, self).__init__('Login')
-        self._connection = db_connect()
+    def __init__(self, connection=None):
+        super(loginWidget, self).__init__('Login')
+        self._user=None
+        if connection==None:
+            self._connection = db_connect()
+        else:
+            self._connection = connection
         self._email = ControlText('Email')
         self._password = ControlPasswordText('Password')
         self._loginButton = ControlButton('Login')
         self._loginButton.value= self.__loginAction
-        self.formset =[' ', (' ', '||', '_email', '||',' '),
+        self.formset =[' ',
+            (' ', '||', '_email', '||',' '),
             (' ', '||', '_password', '||',' '),
             (' ', '||', '_loginButton', '||',' '), ' ']
 
 
     def __loginAction(self):
-        self._user= login(self._connection, self._email.value, self._password.value)
+            self._user= login(self._connection, self._email.value, self._password.value) #user also public
+            if self.parent!=None: self.parent.loadUser(self._user)
+            if self._user != None:
+                self.close()
+
+
+
         #self._user.value = self._email.value + " " +self._password.value
 
 if __name__=="__main__":
