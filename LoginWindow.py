@@ -3,6 +3,7 @@ from pyforms.basewidget import BaseWidget
 from pyforms.controls import ControlText, ControlButton
 from DB_Actions import db_connect, login
 from ControlPasswordText import ControlPasswordText
+from Error_Windows import ErrorWin
 
 
 class loginWidget(BaseWidget):
@@ -24,9 +25,15 @@ class loginWidget(BaseWidget):
 
 
     def __loginAction(self):
+        try:
             self._user= login(self._connection, self._email.value, self._password.value) #user also public
-            if self.parent!=None: self.parent.loadUser(self._user)
-            if self._user != None:
+        except ValueError as error:
+            err = ErrorWin(error)
+            err.show()
+            return
+
+        if self.parent!=None: self.parent.loadUser(self._user)
+        if self._user != None:
                 self.close()
 
 
