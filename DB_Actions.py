@@ -1,6 +1,6 @@
 import pyrebase
 from getpass import getpass
-import datetime
+from datetime import datetime
 import os
 
 def db_connect():
@@ -81,12 +81,27 @@ def post_notification(user, connection, symbol, index, message):
     else:
         email = user['email']
         userID = email.split('@')[0]
-        notif = {"timestamp":{".sv": "timestamp"}, "symbol": symbol, "index": index, "message": message, "author": userID}
+        notif = {"timestamp":{".sv": "timestamp"}, "symbol": symbol, "price": index, "message": message, "author": userID}
         connection['Database'].child("notifications").push(notif, user['idToken'])
 
 
+def pull_notifications(user, connection):
+    if user=='':
+        raise ValueError('User Invalid')
+        return
+    if connection=='':
+        raise ValueError('Connection Invalid')
+        return
+    else:
+        time = datetime
+        notifList = []
+        notifList = connection['Database'].child("notifications").get(user['idToken']).val()
+        return notifList
 
-#def pull_notifications(user, connection):
+
+
+
+
 
 if __name__== "__main__":
     quit= False
