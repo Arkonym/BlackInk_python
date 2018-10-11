@@ -7,10 +7,11 @@ from LoginWindow import loginWidget
 from Notifications_View import NotificationsWidget
 
 
+
 class BlackInkBE(BaseWidget):
     def __init__(self):
         super(BlackInkBE, self).__init__('BlackInk Backend')
-        self._test = ControlText('logged in user')
+        self._test = ControlText('logged in user', readonly=True, maxwidth)
         #self._test.readonly = True
         self._user = None
         self._connection = db_connect()
@@ -24,13 +25,13 @@ class BlackInkBE(BaseWidget):
         self._panel.value = logwin
 
     def Notifications(self):
-        notwin = NotificationsWidget()
+        notwin = NotificationsWidget(self._user, self._connection)
         notwin.parent=self
         self._panel.value =notwin
 
     def loadUser(self, user):
         self._user = user
-        self._test.value = self._user['email']
+        self._test.value = self._user['email'].split('@')[0]
         self.Notifications()
 
 
