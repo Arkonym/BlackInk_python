@@ -1,14 +1,18 @@
 import pyrebase
 from getpass import getpass
 import datetime
+import os
 
 def db_connect():
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, 'auth_keys/blackincapp-firebase-adminsdk-8914t-13046da8cf.json')
     config = {
     "apiKey": "AIzaSyDfkaO2XYX6w_vHFCwRuAxiKTwsWQ_mZRs",
     "authDomain": "blackincapp.firebaseapp.com",
     "databaseURL": "https://blackincapp.firebaseio.com",
     "storageBucket": "blackincapp.appspot.com",
-    "serviceAccount": "G:/BlackInk_python/auth_keys/blackincapp-firebase-adminsdk-8914t-13046da8cf.json."
+    ##Edit this line to point to whereever the auth key is stored
+    "serviceAccount": filename
     }
     firebase = pyrebase.initialize_app(config)
     auth = firebase.auth()
@@ -34,8 +38,7 @@ def login(connection, email, password):
     try:
         return connection['Auth'].sign_in_with_email_and_password(email, password)
     except:
-        print("Email or password invalid")
-        login()
+        raise ValueError('Email or password invalid')
 
 
 
@@ -68,11 +71,17 @@ def post_notification_manual(user, connection):
         raw_input()
 
 def post_notification(user, connection, symbol, index, message):
-    if symbol==None: raise ValueError('Symbol Cannot Be Empty')
-    if index == None: index = '0.00'
-    if message == None: raise ValueError('Message Cannot be Empty')
+    if symbol=='':
+        raise ValueError('Symbol Cannot Be Empty')
+        return
+    if index == '': index = '0.00'
+    if message == '':
+        raise ValueError('Message Cannot be Empty')
+        return
     else:
-        notif = {"timestamp":{".sv": "timestamp"}, "symbol": symbol, "index": index, "message": message, "author": user['email']}
+        email = user['email']
+        userID = email.split('@')[0]
+        notif = {"timestamp":{".sv": "timestamp"}, "symbol": symbol, "index": index, "message": message, "author": userID}
         connection['Database'].child("notifications").push(notif, user['idToken'])
 
 
