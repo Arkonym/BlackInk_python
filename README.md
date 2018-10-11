@@ -12,6 +12,8 @@
 
 4. [pysettings](https://github.com/UmSenhorQualquer/pysettings) - modular settings for Python apps
 
+5. [keyboard](https://pypi.org/project/keyboard/) - detect keyboard events
+
 **All can be installed via pip**, which is the python package handler. Should get installed alongside python. Otherwise, rerun the installer in Windows or get it with ```apt-get install``` on Ubuntu.
 ```
 pip install <package>
