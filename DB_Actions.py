@@ -8,7 +8,7 @@ def db_connect():
     "authDomain": "blackincapp.firebaseapp.com",
     "databaseURL": "https://blackincapp.firebaseio.com",
     "storageBucket": "blackincapp.appspot.com",
-    "serviceAccount": "C:/BlackInk/auth_keys/blackincapp-firebase-adminsdk-8914t-13046da8cf.json."
+    "serviceAccount": "G:/BlackInk_python/auth_keys/blackincapp-firebase-adminsdk-8914t-13046da8cf.json."
     }
     firebase = pyrebase.initialize_app(config)
     auth = firebase.auth()
@@ -42,7 +42,7 @@ def login(connection, email, password):
 
 
 
-def post_notification(user, connection):
+def post_notification_manual(user, connection):
     try:
         comp=input('Enter ticker symbol: ')
     except:
@@ -67,6 +67,16 @@ def post_notification(user, connection):
         print_tb()
         raw_input()
 
+def post_notification(user, connection, symbol, index, message):
+    if symbol==None: raise ValueError('Symbol Cannot Be Empty')
+    if index == None: index = '0.00'
+    if message == None: raise ValueError('Message Cannot be Empty')
+    else:
+        notif = {"timestamp":{".sv": "timestamp"}, "symbol": symbol, "index": index, "message": message, "author": user['email']}
+        connection['Database'].child("notifications").push(notif, user['idToken'])
+
+
+
 #def pull_notifications(user, connection):
 
 if __name__== "__main__":
@@ -74,4 +84,4 @@ if __name__== "__main__":
     connection = db_connect()
     user = login_manual(connection)
     while quit==False:
-        post_notification(user, connection)
+        post_notification_manual(user, connection)
