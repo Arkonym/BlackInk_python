@@ -1,8 +1,7 @@
 import pyforms
 from pyforms.basewidget import BaseWidget
-from pyforms.controls import ControlText, ControlButton
+from pyforms.controls import ControlText, ControlButton, ControlPassword
 from DB_Actions import db_connect, login
-from ControlPasswordText import ControlPasswordText
 from Error_Windows import ErrorWin
 
 
@@ -15,7 +14,7 @@ class loginWidget(BaseWidget):
         else:
             self._connection = connection
         self._email = ControlText('Email')
-        self._password = ControlPasswordText('Password')
+        self._password = ControlPassword('Password')
         self._loginButton = ControlButton('Login')
         self._loginButton.value= self.__loginAction
         self.formset =[' ',
@@ -31,14 +30,16 @@ class loginWidget(BaseWidget):
             err = ErrorWin(error)
             err.show()
             return
-
+        #if self._user['displayname'] = '':
+            #dispNameWin =
         if self.parent!=None: self.parent.loadUser(self._user)
         if self._user != None:
                 self.close()
 
 
+#class displayNameWidget(BaseWidget):
+    #def __init__(self, user= None, connection=None):
 
-        #self._user.value = self._email.value + " " +self._password.value
 
 if __name__=="__main__":
     pyforms.start_app(loginWidget, geometry=(200, 200, 400, 400))
