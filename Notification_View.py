@@ -8,20 +8,20 @@ from datetime import datetime
 
 
 class NotificationWidget(Notification, BaseWidget):
-    def __init__(self, user=None, connection=None, timestamp='', symbol= '', index='', message=''):
+    def __init__(self, user=None, connection=None, timestamp='', symbol= '', price='', message=''):
         Notification.__init__(self, timestamp, symbol, index, message)
         BaseWidget.__init__(self, 'Notification')
         self._user = user
         self._connection = connection
-        self._symbolField = ControlText('Company Symbol')
-        self._indexField = ControlText('Current Index')
-        self._messageField = ControlTextArea('Advisory')
+        self._symbol_field = ControlText('Company Symbol')
+        self._price_field = ControlText('Current Price (Optional)')
+        self._message_field = ControlTextArea('Advisory')
         if symbol != '':
-            self._symbolField.value = symbol
+            self._symbol_field.value = symbol
         if index != '':
-            self._indexField.value=index
+            self._price_field.value=price
         if message != '':
-            self._messageField.value = message
+            self._message_field.value = message
         if timestamp == '':
             self._sendButton = ControlButton('Send')
             self._sendButton.value = self.__sendNotification
@@ -30,19 +30,19 @@ class NotificationWidget(Notification, BaseWidget):
             self._sendButton.value = self._close
 
 
-        self._formset =[' ', ('||', '_symbolField', '||', ' '), '=',
-                        ('||','_indexField', '||', ' '),
-                        ('||', '_messageField', '||'),
+        self._formset =[' ', ('||', '_symbol_field', '||', ' '), '=',
+                        ('||','_index_field', '||', ' '),
+                        ('||', '_message_field', '||'),
                         ('||', '_sendButton', '||')]
 
     def __sendNotification(self):
         self._timestamp = datetime.now().timestamp()
-        self._symbol = self._symbolField.value
-        self._index = self._indexField.value
-        self._message = self._messageField.value
+        self._symbol = self._symbol_field.value
+        self._price = self._price_field.value
+        self._message = self._message_field.value
         try:
             post_notification(self._user, self._connection, self._symbol,
-                        self._index, self._message)
+                        self._price, self._message)
         except ValueError as error:
             err= ErrorWin(error)
             err.parent = self
