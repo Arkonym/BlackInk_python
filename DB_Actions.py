@@ -79,8 +79,9 @@ def post_notification(user, connection, symbol, index, message):
         raise ValueError('Message Cannot be Empty')
         return
     else:
-        email = user['email']
-        userID = email.split('@')[0]
+        #email = user['email']
+        #userID = email.split('@')[0]
+        userID = cut_email(user)
         notif = {"timestamp":{".sv": "timestamp"}, "symbol": symbol, "price": index, "message": message, "author": userID}
         connection['Database'].child("notifications").push(notif, user['idToken'])
 
@@ -95,11 +96,34 @@ def pull_notifications(user, connection):
     else:
         time = datetime
         notifList = []
-        notifList = connection['Database'].child("notifications").get(user['idToken']).val()
+        try:
+            notifList = connection['Database'].child("notifications").get(user['idToken']).val()
+        except:
+            notifList = []
         return notifList
 
+def user_dir(user, connection): #localId is persistent for firebase
+    userDir=[]
+    try:
+        userDir = connection['Database'].child("users").child(user['localId']).get(user['idToken']).val()
+        for i in userDir:
+            print (userDir[i])
+        if userDir==[]:
+            raise Exception('no directory found')
+        else:
+            return userDir
+    except:
+        u = {"name":'', 'email':user['email']}
+        connection['Database'].child("users").child(user['localId']).set(u, user['idToken'])
+        print('director created')
+
+def pull_users(user, connection):
+    pass
 
 
+
+def cut_email(user):
+    return user['email'].split('@')[0]
 
 
 
@@ -107,5 +131,6 @@ if __name__== "__main__":
     quit= False
     connection = db_connect()
     user = login_manual(connection)
-    while quit==False:
-        post_notification_manual(user, connection)
+    user_dir(user, connection)
+    #while quit==False:
+        #post_notification_manual(user, connection)
