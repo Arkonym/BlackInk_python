@@ -34,14 +34,15 @@ class NotificationsWidget(Notifications, BaseWidget):
     def _refresh(self):
         self._notifList.clear()
         self._retreive_existing()
-        
+        if self.parent!=None: self.parent.persist_login()
+
     def _retreive_existing(self):
         pull_list = pull_notifications(self._user, self._connection)
-
-        for i in pull_list:
-            ts = pull_list[i]['timestamp']
-            datestring=datetime.fromtimestamp(ts/1e3).strftime('%Y-%m-%d %H:%M:%S')
-            self._notifList.__add__([datestring, pull_list[i]['symbol'], pull_list[i]['index'], pull_list[i]['message']])
+        if pull_list:
+            for i in pull_list:
+                ts = pull_list[i]['timestamp']
+                datestring=datetime.fromtimestamp(ts/1e3).strftime('%Y-%m-%d %H:%M:%S')
+                self._notifList.__add__([datestring, pull_list[i]['symbol'], pull_list[i]['price'], pull_list[i]['message']])
 
     def add_notification(self, notif):
         super().add_notification(notif)
@@ -50,6 +51,7 @@ class NotificationsWidget(Notifications, BaseWidget):
         notif.close()
 
     def __addNotifBtnAction(self):
+        if self.parent!=None: self.parent.persist_login()
         win = NotificationWidget(self._user, self._connection)
         win.parent = self
         win.show()
@@ -58,6 +60,7 @@ class NotificationsWidget(Notifications, BaseWidget):
         self.remove_notification(self._notifList.selected_row_index)
 
     def __onSelect(self, row, column):
+        if self.parent!=None: self.parent.persist_login()
         timestamp = self._notifList.get_value(0, row)
         symbol = self._notifList.get_value(1, row)
         index = self._notifList.get_value(2, row)
