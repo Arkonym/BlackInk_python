@@ -1,8 +1,9 @@
 import pyforms
 from pyforms.basewidget import BaseWidget
-from pyforms.controls import ControlEmptyWidget, ControlText, ControlButton, ControlLabel
+from pyforms.controls import ControlEmptyWidget, ControlText, ControlToolButton, ControlLabel
 from DB_Actions import db_connect
 from LoginWindow import loginWidget
+from Account_Admin_View import AdminWidget
 from Notifications_View import NotificationsWidget
 from datetime import datetime
 from time import sleep
@@ -13,13 +14,16 @@ class BlackInkBE(BaseWidget):
     def __init__(self):
         super(BlackInkBE, self).__init__('BlackInk Backend')
         self._display_name = ControlLabel('')
+        self._accounts_admin= ControlToolButton('Accounts Panel', maxheight = 50, maxwidth=100)
+        self._accounts_admin.hide()
+        self._accounts_admin.value = self._Accounts
+
         self._user = None
         self._connection = db_connect()
+
         self._panel = ControlEmptyWidget()
-        #self._formset= { ('||','_display_name', '||'), ('_panel')
-        #}
         self._login()
-        #self._persist_login()
+
 
 
     def _login(self):
@@ -33,16 +37,23 @@ class BlackInkBE(BaseWidget):
         self._connection = None
         self._login()
 
+
+    def loadUser(self, user):
+        self._user = user
+        self._display_name.value = self._user['email'].split('@')[0]
+        self._accounts_admin.show()
+        self._Notifications()
+
     def _Notifications(self):
         notwin = NotificationsWidget(self._user, self._connection)
         notwin.parent=self
         self._panel.value =notwin
 
-    def loadUser(self, user):
-        self._user = user
-        self._display_name.value = self._user['email'].split('@')[0]
-        #self._persist_login()
-        self._Notifications()
+    def _Accounts(self):
+        win = AdminWidget(self._user, self._connection)
+        win.parent = self
+        win.show()
+
 
     def persist_login(self):
         cur_time = datetime.now().hour
