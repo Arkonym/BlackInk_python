@@ -61,7 +61,7 @@ def post_notification_manual(user, connection):
     except:
         price = "0.00"
 
-    notif = {"timestamp":{".sv": "timestamp"}, "symbol": comp, "index": price, "message": message}
+    notif = {"timestamp":{".sv": "timestamp"}, "symbol": comp, "price": price, "message": message}
     try:
         connection['Database'].child("notifications").push(notif, user['idToken'])
         notif['timestamp'] = datetime.datetime.now().timestamp()
@@ -70,7 +70,7 @@ def post_notification_manual(user, connection):
         print_tb()
         raw_input()
 
-def post_notification(user, connection, symbol, index, message):
+def post_notification(user, connection, symbol, price, message):
     if symbol=='':
         raise ValueError('Symbol Cannot Be Empty')
         return
@@ -82,7 +82,7 @@ def post_notification(user, connection, symbol, index, message):
         #email = user['email']
         #userID = email.split('@')[0]
         userID = cut_email(user)
-        notif = {"timestamp":{".sv": "timestamp"}, "symbol": symbol, "price": index, "message": message, "author": userID}
+        notif = {"timestamp":{".sv": "timestamp"}, "symbol": symbol, "price": price, "message": message, "author": userID}
         connection['Database'].child("notifications").push(notif, user['idToken'])
 
 
@@ -118,7 +118,23 @@ def user_dir(user, connection): #localId is persistent for firebase
         print('director created')
 
 def pull_users(user, connection):
-    pass
+    if user=='':
+        raise ValueError('User Invalid')
+        return
+    if connection=='':
+        raise ValueError('Connection Invalid')
+        return
+    else:
+        user_list=[]
+        try:
+            user_list = connection['Database'].child("users").get(user['idToken']).val()
+            for i in user_list:
+                print (user_list[i])
+            if user_list==[]:
+                raise Exception('No Users')
+        except:
+            user_list=[]
+    return user_list
 
 
 
@@ -131,6 +147,6 @@ if __name__== "__main__":
     quit= False
     connection = db_connect()
     user = login_manual(connection)
-    user_dir(user, connection)
+    pull_users(user, connection)
     #while quit==False:
         #post_notification_manual(user, connection)
