@@ -9,7 +9,7 @@ from datetime import datetime
 
 class NotificationWidget(Notification, BaseWidget):
     def __init__(self, user=None, connection=None, timestamp='', symbol= '', price='', message=''):
-        Notification.__init__(self, timestamp, symbol, index, message)
+        Notification.__init__(self, timestamp, symbol, price, message)
         BaseWidget.__init__(self, 'Notification')
         self._user = user
         self._connection = connection
@@ -18,7 +18,7 @@ class NotificationWidget(Notification, BaseWidget):
         self._message_field = ControlTextArea('Advisory')
         if symbol != '':
             self._symbol_field.value = symbol
-        if index != '':
+        if price != '':
             self._price_field.value=price
         if message != '':
             self._message_field.value = message
@@ -31,7 +31,7 @@ class NotificationWidget(Notification, BaseWidget):
 
 
         self._formset =[' ', ('||', '_symbol_field', '||', ' '), '=',
-                        ('||','_index_field', '||', ' '),
+                        ('||','_price_field', '||', ' '),
                         ('||', '_message_field', '||'),
                         ('||', '_sendButton', '||')]
 
