@@ -74,7 +74,7 @@ def post_notification(user, connection, symbol, price, message):
     if symbol=='':
         raise ValueError('Symbol Cannot Be Empty')
         return
-    if index == '': index = '0.00'
+    if price == '': price = '0.00'
     if message == '':
         raise ValueError('Message Cannot be Empty')
         return
@@ -83,7 +83,10 @@ def post_notification(user, connection, symbol, price, message):
         #userID = email.split('@')[0]
         userID = cut_email(user)
         notif = {"timestamp":{".sv": "timestamp"}, "symbol": symbol, "price": price, "message": message, "author": userID}
-        connection['Database'].child("notifications").push(notif, user['idToken'])
+        try:
+            connection['Database'].child("notifications").push(notif, user['idToken'])
+        except:
+            raise ValueError('permission denied')
 
 
 def pull_notifications(user, connection):

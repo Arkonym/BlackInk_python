@@ -1,0 +1,55 @@
+
+
+path /users/{uid} is User{
+  read() {uid== currentUser() || isAdmin(currentUser())}
+  write() {uid==currentUser() || isAdmin(currentUser())}
+}
+
+path /notifications is Notification{
+  read() {isSubscribed(currentUser())|| isAdmin(currentUser())}
+  write() {isAdmin(currentUser())}
+}
+
+type Notification{
+  author: String,
+  message: String,
+  price: String,
+  symbol: String,
+
+  timestamp: CurTimeStamp
+
+}
+/*
+type InitTimeStamp extends Number{
+  validate() {initial(this, now)}
+}*/
+
+type CurTimeStamp extends Number{
+  validate() {this==now}
+}
+
+type User{
+  uid: String,
+  name: String,
+  email: String,
+  permissions: Map<Permission, Boolean>,
+  services: Map<Service, Boolean>
+}
+
+type Permission extends String{
+  validate() {this=='admin' || this=='client'}
+}
+type Service extends String{
+  validate() {this=='notifications' || this=='newsletter' || this=='analysis' || this== 'full_enrol'}
+}
+
+isSubscribed(uid){isUser(uid) && root.users[uid].services['notifications']==true}
+isAdmin(uid) {auth!=NULL && uid==currentUser() && root.users[uid].permissions['admin']==true}
+isUser(uid) {auth!=NULL && uid==currentUser()}
+currentUser(){auth.uid}
+
+/*
+initial(value, init){
+  value==(prior(value)==null ? init: prior(value))
+}
+*/
