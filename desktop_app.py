@@ -57,7 +57,8 @@ class BlackInkBE(BaseWidget):
 
     def persist_login(self):
         cur_time = datetime.now().hour
-        if cur_time - self._login_time > 0.9:
+        print(cur_time-self._login_time)
+        if cur_time - self._login_time > 50:
             try:
                 self._user = self._connection['Auth'].refresh(user['refreshToken'])
             except:
