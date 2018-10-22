@@ -26,7 +26,7 @@ class AdminWidget(BaseWidget):
         email  = self._userList.get_value(1, row)
         for i in self._user_pull:
             if self._user_pull[i]['email'] == email:
-                permissions= self._user_pull[i]['permissions']
+                permission= self._user_pull[i]['permissions']
                 services = self._user_pull[i]['services']
         win = UserWidget(self._admin, self._connection, email, name, permissions, services)
         win.parent = self

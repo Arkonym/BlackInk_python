@@ -6,8 +6,8 @@ from Error_Windows import ErrorWin, close_win
 from DB_Actions import pull_users
 
 class UserWidget(User, BaseWidget):
-    def __init__(self, admin=None, connection=None, email='', name='', permissions=[], services=[]):
-        User.__init__(self, email, name, '', permissions, services)
+    def __init__(self, admin=None, connection=None, email='', name='', services=[]):
+        User.__init__(self, email, name, '', services)
         BaseWidget.__init__(self, 'User')
         self._admin = admin
         self._connection = connection
@@ -24,16 +24,6 @@ class UserWidget(User, BaseWidget):
         self._name_field.readonly = True
         if name!='':
             self._name_field = name
-
-        self._permissions_field = ControlList('Permissons')
-        self._permissions_field.readonly= True
-        self._permissions_field.horizontal_headers = ['Permission', 'Value']
-        self._permissions_field.cell_double_clicked_event = None
-        if permissions!=[]:
-            for i in permissions:
-                self._permissions_field.__add__([permissions[i]['perm'], permissions[i]['value']])
-
-
 
         self._services_field = ControlList('Services')
         self._services_field.readonly= True
