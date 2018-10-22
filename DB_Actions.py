@@ -151,5 +151,6 @@ if __name__== "__main__":
     connection = db_connect()
     user = login_manual(connection)
     pull_users(user, connection)
+
     #while quit==False:
         #post_notification_manual(user, connection)
