@@ -31,7 +31,7 @@ class UserWidget(User, BaseWidget):
         self._permissions_field.cell_double_clicked_event = None
         if permissions!=[]:
             for i in permissions:
-                self._permissions_field.__add__(permissions[i]['perm'], permissions[i]['value'])
+                self._permissions_field.__add__([permissions[i]['perm'], permissions[i]['value']])
 
 
 
@@ -41,7 +41,7 @@ class UserWidget(User, BaseWidget):
         self._services_field.cell_double_clicked_event = None
         if services!=[]:
             for i in services:
-                self._services_field.__add__(services[i]['service'], services[i]['value'])
+                self._services_field.__add__([services[i]['service'], services[i]['value']])
 
 
     def _edit(self):
