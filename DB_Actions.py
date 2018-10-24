@@ -32,7 +32,7 @@ def login_manual(connection):
         return connection['Auth'].sign_in_with_email_and_password(email, password)
     except:
         print("Email or password invalid")
-        login()
+        login_manual()
 
 def login(connection, email, password):
     try:
