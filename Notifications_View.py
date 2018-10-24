@@ -37,7 +37,13 @@ class NotificationsWidget(Notifications, BaseWidget):
         if self.parent!=None: self.parent.persist_login()
 
     def _retreive_existing(self):
-        pull_list = pull_notifications(self._user, self._connection)
+        try:
+            pull_list = pull_notifications(self._user, self._connection)
+        except ValueError as err:
+            err= ErrorWin(err)
+            err.parent = self
+            err.show()
+            return
         if pull_list:
             for i in pull_list:
                 ts = pull_list[i]['timestamp']
