@@ -11,12 +11,11 @@ path /notifications is Notification{
 }
 
 type Notification{
-  author: String,
-  message: String,
-  price: String,
+  timestamp: CurTimeStamp,
   symbol: String,
-
-  timestamp: CurTimeStamp
+  price: String,
+  message: String,
+  author: String
 
 }
 /*
