@@ -36,10 +36,10 @@ class NotificationWidget(Notification, BaseWidget):
                         ('||', '_sendButton', '||')]
 
     def __sendNotification(self):
-        self._timestamp = datetime.now().timestamp()
-        self._symbol = self._symbol_field.value
-        self._price = self._price_field.value
-        self._message = self._message_field.value
+        self.timestamp = datetime.now().timestamp()
+        self.symbol = self._symbol_field.value
+        self.price = self._price_field.value
+        self.message = self._message_field.value
         try:
             post_notification(self._user, self._connection, self._symbol,
                         self._price, self._message)
