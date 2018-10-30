@@ -1,4 +1,9 @@
 
+path /admins is Map<String, Boolean>
+{
+  read() {isUser(currentUser())}
+  write() {isUser(currentUser())&& isAdmin(currentUser())}
+}
 
 path /users/{uid} is User{
   read() {uid== currentUser() || isAdmin(currentUser())}
@@ -11,7 +16,6 @@ path /notifications is Notification{
 }
 
 type Notification{
-  timestamp: CurTimeStamp,
   symbol: String,
   price: String,
   message: String,
@@ -31,7 +35,6 @@ type User{
   uid: String,
   name: String,
   email: String,
-  permissions: Map<Permission, Boolean>,
   services: Map<Service, Boolean>
 }
 
@@ -39,12 +42,12 @@ type Permission extends String{
   validate() {this=='admin' || this=='client'}
 }
 type Service extends String{
-  validate() {this=='notifications' || this=='newsletter' || this=='analysis' || this== 'full_enrol'}
+  validate() {this=='notifications' || this=='newsletter' || this=='analysis' || this== 'full_enroll'}
 }
 
 isSubscribed(uid){isUser(uid) && root.users[uid].services['notifications']==true}
-isAdmin(uid) {auth!=NULL && uid==currentUser() && root.users[uid].permissions['admin']==true}
-isUser(uid) {auth!=NULL && uid==currentUser()}
+isAdmin(uid) {auth!=NULL && isUser(uid) && root.admins[uid]==true}
+isUser(uid) {auth!=NULL && root.users[uid]!=null && uid==currentUser()}
 currentUser(){auth.uid}
 
 /*
