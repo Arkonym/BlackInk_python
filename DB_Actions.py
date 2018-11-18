@@ -26,7 +26,11 @@ def login_manual(connection):
     email = input('Enter Your Email: ')
     if email == "quit":
         sys.exit()
+    email.replace('\t', "")
+    email.replace(" ", "")
     password= getpass()
+    password.replace(" ", "")
+    password.replace("\t", "")
     #authenticate user
     try:
         return connection['Auth'].sign_in_with_email_and_password(email, password)
@@ -35,6 +39,9 @@ def login_manual(connection):
         login_manual()
 
 def login(connection, email, password):
+    email.replace(" ", "")
+    email.replace("\t", "")
+    password.replace("\t", "")
     try:
         return connection['Auth'].sign_in_with_email_and_password(email, password)
     except:
@@ -128,15 +135,17 @@ def pull_users(user, connection):
         raise ValueError('Connection Invalid')
         return
     else:
-        user_list=[]
+        user_list=None
         try:
-            user_list = connection['Database'].child("users").get(user['idToken']).val()
-            for i in user_list:
-                print (user_list[i])
-            if user_list==[]:
+            user_list = connection['Database'].child("users").get().val()
+            print(user_list)
+            if user_list==None:
                 raise Exception('No Users')
         except:
-            user_list=[]
+            user_list=None
+        #for user in user_list:
+            #print (user_list[user])
+
     return user_list
 
 
