@@ -8,13 +8,12 @@ from Notifications_View import NotificationsWidget
 from datetime import datetime
 from time import sleep
 
-delta_hour =0
 
 class BlackInkBE(BaseWidget):
     def __init__(self):
         super(BlackInkBE, self).__init__('BlackInk Backend')
         self._display_name = ControlLabel('')
-        self._accounts_admin= ControlToolButton('Accounts Panel', maxheight = 50, maxwidth=100)
+        self._accounts_admin= ControlToolButton('Accounts Panel', maxheight = 100, maxwidth=100)
         self._accounts_admin.hide()
         self._accounts_admin.value = self._Accounts
 
@@ -57,21 +56,11 @@ class BlackInkBE(BaseWidget):
 
     def persist_login(self):
         cur_time = datetime.now().hour
-        print(cur_time-self._login_time)
         if cur_time - self._login_time > 50:
             try:
                 self._user = self._connection['Auth'].refresh(user['refreshToken'])
             except:
                 self._login()
-
-
-
-
-
-
-
-
-
 
 
 

@@ -1,4 +1,7 @@
 import pyforms
+import sys
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import *
 from pyforms.basewidget import BaseWidget
 from pyforms.controls import ControlList, ControlButton, ControlToolButton
 from Notifications import Notifications
@@ -18,11 +21,10 @@ class NotificationsWidget(Notifications, BaseWidget):
         self._connection = connection
         self._refresh_button = ControlToolButton('Refresh', maxheight= 50, maxwidth= 100)
         self._notifList = ControlList('Notifications',
-            select_entire_row = True,
-            plusFunction = self.__addNotifBtnAction,
-            minusFunction = self.__rmNotifBtnAction)
+            select_entire_row = True)
         self._notifList.readonly = True
-        self._notifList.cell_double_clicked_event = self.__onSelect
+        self._notifList.cell_double_clicked_event = self.__onDouble
+        self._notifList.item_selection_changed_event = self.__softSelect
         self._notifList.horizontal_headers = [ 'Timestamp', 'Symbol', 'Price', 'Message']
 
         self._plusBtn = ControlButton('New Notification')
@@ -65,7 +67,7 @@ class NotificationsWidget(Notifications, BaseWidget):
     def __rmNotifBtnAction(self):
         self.remove_notification(self._notifList.selected_row_index)
 
-    def __onSelect(self, row, column):
+    def __onDouble(self, row, column):
         if self.parent!=None: self.parent.persist_login()
         timestamp = self._notifList.get_value(0, row)
         symbol = self._notifList.get_value(1, row)
@@ -75,5 +77,7 @@ class NotificationsWidget(Notifications, BaseWidget):
         win.parent = self
         win.show()
 
+    def __softSelect(self):
+        self._notifList.form.get_value()
 if __name__== "__main__":
     pyforms.start_app(NotificationsWidget, geometry=(400, 400, 600, 600))
