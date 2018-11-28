@@ -3,6 +3,8 @@ from pyforms.basewidget import BaseWidget
 from pyforms.controls import ControlText, ControlButton, ControlPassword
 from DB_Actions import db_connect, login
 from Error_Windows import ErrorWin
+from PyQt5 import QtCore, QtGui
+import keyboard
 
 
 class loginWidget(BaseWidget):
@@ -23,6 +25,7 @@ class loginWidget(BaseWidget):
             (' ', '||', '_loginButton', '||',' '), ' ']
 
 
+
     def __loginAction(self):
         try:
             self._user= login(self._connection, self._email.value, self._password.value) #user also public
@@ -35,6 +38,10 @@ class loginWidget(BaseWidget):
         if self.parent!=None: self.parent.loadUser(self._user)
         if self._user != None:
                 self.close()
+    def _keyPressEvent(self, event):
+        if event.key() == QtCore.Key_Enter:
+            self.__loginAction(self)
+
 
 
 #class displayNameWidget(BaseWidget):
