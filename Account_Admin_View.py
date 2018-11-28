@@ -35,6 +35,13 @@ class AdminWidget(BaseWidget):
         win.parent = self
         win.show()
 
+    def _refresh(self):
+        self._userList.clear()
+        self._user_pull= pull_users(self._admin, self._connection)
+        if self._user_pull!=None:
+            for user in self._user_pull:
+                self._userList.__add__([self._user_pull[user]['name'], self._user_pull[user]['email']])
+
     def update_user(account):
         if account.changes[0]:
             connection['Database'].child("users").child(account._uid).child("name").update(account.name)

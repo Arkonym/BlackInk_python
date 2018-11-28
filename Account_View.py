@@ -20,25 +20,31 @@ class UserWidget(User, BaseWidget):
         self._email_field = ControlText('Email')
         self._email_field.readonly = True
         if email!='':
-            self._email_field = email
+            self._email_field.value = email
 
         self._name_field =ControlText('Name')
         self._name_field.readonly = True
         if name!='':
-            self._name_field = name
+            self._name_field.value = name
 
         self._services = services
         self._services_field = ControlList('Services')
         self._services_field.readonly= True
         self._services_field.horizontal_headers = ['Service', 'Value']
-        self._services_field.cell_double_clicked_event = self._toggle
+        #self._services_field.cell_double_clicked_event = None
         if services!={}:
             for i in services:
                 self._services_field.__add__([i, services[i]])
 
 
     def _edit(self):
-        pass
+        self._editBtn = ControlButton('Save')
+        self._editBtn.value = self._save
+        self._email_field.readonly = False
+        self._name_field.readonly = False
+        self._services_field.readonly = False
+        self._services_field.cell_double_clicked_event = self._toggle
+
     def _save(self):
         if self.parent!=None:
             self.name = self._name_field.value
@@ -50,10 +56,10 @@ class UserWidget(User, BaseWidget):
         val = self._services_field.get_value(column, row)
         if val == True:
             self._services_field.set_value(column, row, False)
-            self._services[self._services_field..get_value(0, row)] = False
+            self._services[self._services_field.get_value(0, row)] = False
         else:
             self._services_field.set_value(column, row,True)
-            self._services[self._services_field..get_value(0, row)] = True
+            self._services[self._services_field.get_value(0, row)] = True
         self.changes[1] =True
 
 
