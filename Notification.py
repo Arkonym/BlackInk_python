@@ -2,11 +2,20 @@
 
 
 class Notification:
-    def __init__(self, timestamp, symbols, index, message):
+    def __init__(self, timestamp, symbols, index, message, key=''):
+        self._key = key
         self._timestamp = timestamp
         self._symbol   = symbols
         self._price     = index
         self._message   =  message
+
+    @property
+    def key(self):
+        return key
+    @key.setter
+    def key(self, ky):
+        self._key=ky
+
     @property
     def timestamp(self):
         return self._timestamp

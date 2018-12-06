@@ -8,11 +8,12 @@ from datetime import datetime
 
 
 class NotificationWidget(Notification, BaseWidget):
-    def __init__(self, user=None, connection=None, timestamp='', symbol= '', price='', message=''):
-        Notification.__init__(self, timestamp, symbol, price, message)
+    def __init__(self, user=None, connection=None, timestamp='', symbol= '', price='', message='', flag= '', key=''):
+        Notification.__init__(self, timestamp, symbol, price, message, key)
         BaseWidget.__init__(self, 'Notification')
         self._user = user
         self._connection = connection
+        self._key = key
         self._symbol_field = ControlText('Company Symbol')
         self._price_field = ControlText('Current Price (Optional)')
         self._message_field = ControlTextArea('Advisory')
@@ -22,9 +23,15 @@ class NotificationWidget(Notification, BaseWidget):
             self._price_field.value=price
         if message != '':
             self._message_field.value = message
-        if timestamp == '':
+        if flag == 'new':
             self._sendButton = ControlButton('Send')
             self._sendButton.value = self.__sendNotification
+        elif flag == 'view':
+            self._sendButton = ControlButton('Close')
+            self._sendButton.value = self._close
+        elif flag == 'edit':
+            self._sendButton = ControlButton('Save')
+            self._sendButton.value = self.__sendUpdate
         else:
             self._sendButton = ControlButton('Close')
             self._sendButton.value = self._close
@@ -36,13 +43,12 @@ class NotificationWidget(Notification, BaseWidget):
                         ('||', '_sendButton', '||')]
 
     def __sendNotification(self):
-        self.timestamp = datetime.now().timestamp()
-        self.symbol = self._symbol_field.value
-        self.price = self._price_field.value
-        self.message = self._message_field.value
+        Notification.timestamp = datetime.now().timestamp()
+        Notification.symbol = self._symbol_field.value
+        Notification.price = self._price_field.value
+        Notification.message = self._message_field.value
         try:
-            post_notification(self._user, self._connection, self._symbol,
-                        self._price, self._message)
+            post_notification(self._user, self._connection, Notification)
         except ValueError as error:
             err= ErrorWin(error)
             err.parent = self
@@ -55,8 +61,10 @@ class NotificationWidget(Notification, BaseWidget):
             err.show()
             return
 
+        if self.parent!=None: self.parent.add_notification(self, Notification)
 
-        if self.parent!=None: self.parent.add_notification(self)
+    def __sendUpdate(self):
+        pass
 
     def _close(self):
         close_win(self)
