@@ -77,24 +77,51 @@ def post_notification_manual(user, connection):
         print_tb()
         raw_input()
 
-def post_notification(user, connection, symbol, price, message):
-    if symbol=='':
+def post_notification(user, connection, notif):
+    if notif.symbol=='':
         raise ValueError('Symbol Cannot Be Empty')
         return
-    if price == '': price = '0.00'
-    if message == '':
+    if notif.price == '': notif.price = '0.00'
+    if notif.message == '':
         raise ValueError('Message Cannot be Empty')
         return
     else:
         #email = user['email']
         #userID = email.split('@')[0]
         userID = cut_email(user)
-        notif = {"timestamp":{".sv": "timestamp"}, "symbol": symbol, "price": price, "message": message, "author": userID}
+        notif = {"timestamp":{".sv": "timestamp"}, "symbol": notif.symbol, "price": notif.price, "message": notif.message, "author": userID}
         try:
-            connection['Database'].child("notifications").push(notif, user['idToken'])
+            tmp =connection['Database'].child("notifications").push(notif, user['idToken'])
         except:
             raise ValueError('permission denied')
+            return
+        return tmp
+        
+def del_notification(user, connection, key):
+    if user=='':
+        raise ValueError('User Invalid')
+        return
+    if connection=='':
+        raise ValueError('Connection Invalid')
+        return
+    else:
+        try:
+            connection['Database'].child("notifications").child(key).remove
+        except:
+            raise ValueError("Key not found")
 
+def update_notification(user, connection, notif):
+    if user=='':
+        raise ValueError('User Invalid')
+        return
+    if connection=='':
+        raise ValueError('Connection Invalid')
+        return
+    else:
+        try:
+            connection['Database'].child("notifications").child(notif.key).update({"symbol": notif.symbol, "message": notif.message, "price": notif.price})
+        except:
+            raise ValueError("Woops. That didn't work")
 
 def pull_notifications(user, connection):
     if user=='':
@@ -111,6 +138,8 @@ def pull_notifications(user, connection):
         except:
             notifList = []
         return notifList
+
+
 
 def user_dir(user, connection): #localId is persistent for firebase
     userDir=[]
