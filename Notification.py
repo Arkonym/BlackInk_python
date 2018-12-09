@@ -11,7 +11,7 @@ class Notification:
 
     @property
     def key(self):
-        return key
+        return self._key
     @key.setter
     def key(self, ky):
         self._key=ky
@@ -30,7 +30,7 @@ class Notification:
         self._symbol=sym
     @property
     def price(self):
-        return self.price
+        return self._price
     @price.setter
     def price(self, price):
         self._price=price
@@ -43,4 +43,10 @@ class Notification:
 
     @property
     def readOut(self):
-        return "{0} {1} {2} {3}".format(self._timestamp, self._symbols, self._price, self._message)
+        return "{0} {1} {2} {3} {4}".format(self._key, self._timestamp, self._symbol, self._price, self._message)
+
+
+if __name__ == '__main__':
+    tmp = Notification('', 'AAPL', 0.00, 'hello world', '+=+')
+    print(tmp.key)
+    print(tmp.readOut)
