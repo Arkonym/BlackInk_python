@@ -43,9 +43,13 @@ def login(connection, email, password):
     email.replace("\t", "")
     password.replace("\t", "")
     try:
-        return connection['Auth'].sign_in_with_email_and_password(email, password)
+        user = connection['Auth'].sign_in_with_email_and_password(email, password)
     except:
         raise ValueError('Email or password invalid')
+    if connection['Database'].child('admins').child(user['localId']).get(user['idToken']).val() == True:
+        return user
+    else:
+        raise ValueError('Account not registered as admin')
 
 
 
@@ -96,7 +100,7 @@ def post_notification(user, connection, notif):
             raise ValueError('permission denied')
             return
         return tmp
-        
+
 def del_notification(user, connection, key):
     if user=='':
         raise ValueError('User Invalid')
@@ -106,7 +110,7 @@ def del_notification(user, connection, key):
         return
     else:
         try:
-            connection['Database'].child("notifications").child(key).remove
+            connection['Database'].child("notifications").child(key).remove()
         except:
             raise ValueError("Key not found")
 
@@ -141,7 +145,7 @@ def pull_notifications(user, connection):
 
 
 
-def user_dir(user, connection): #localId is persistent for firebase
+def user_dir(user, connection): #localId is persisten record key in firebase
     userDir=[]
     try:
         userDir = connection['Database'].child("users").child(user['localId']).get(user['idToken']).val()
