@@ -59,13 +59,6 @@ class NotificationsWidget(Notifications, BaseWidget):
                 datestring=datetime.fromtimestamp(ts/1e3).strftime('%Y-%m-%d %H:%M:%S')
                 self._notifList.__add__([datestring, pull_list[i]['symbol'], pull_list[i]['price'], pull_list[i]['message']])
 
-    def add_notification(self, win, notif):
-        super().add_notification(notif)
-        #self._notifList+=[datetime.fromtimestamp(notif.timestamp).strftime('%Y-%m-%d %H:%M:%S'),
-                    #notif.symbol, notif.price, notif.message]
-        #self._notifCache+={notif.key: {notif}}
-        self._refresh()
-        win.close()
 
     def __addNotifBtnAction(self):
         if self.parent!=None: self.parent.persist_login()
@@ -76,7 +69,7 @@ class NotificationsWidget(Notifications, BaseWidget):
 
 
     def __rmNotifBtnAction(self):
-        self.remove_notification(self._notifList.selected_row_index)
+        self.__deleteNotif(self)
 
     def __onDouble(self, row, column):
         if self.parent!=None: self.parent.persist_login()
@@ -97,6 +90,7 @@ class NotificationsWidget(Notifications, BaseWidget):
         for i in self._notifCache:
             if self._notifCache[i]['message']== message:
                 key = i
+                #print("popedit key found: " + key)
         win = NotificationWidget(self._user, self._connection, timestamp, symbol, index, message, "edit", key)
         win.parent = self
         win.show()
@@ -109,7 +103,7 @@ class NotificationsWidget(Notifications, BaseWidget):
         row = self._notifList.selected_row_index
         message = self._notifList.get_value(3, row)
         for i in self._notifCache:
-            if i['message']== message:
+            if self._notifCache[i]['message']== message:
                 key= i
         try:
             del_notification(self._user, self._connection, key)
