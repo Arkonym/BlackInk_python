@@ -30,6 +30,7 @@ class loginWidget(BaseWidget):
         try:
             self._user= login(self._connection, self._email.value, self._password.value) #user also public
         except ValueError as error:
+            self._password.value = ''
             err = ErrorWin(error)
             err.show()
             return
