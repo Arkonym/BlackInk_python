@@ -1,10 +1,10 @@
 
 
 class User:
-    def __init__(self, email='', name= '', displayname='',  services=[]):
+    def __init__(self, uid='', email='', name= '',  services=[]):
+        self._uid = uid
         self._email = email
         self._name = name
-        self._display_name = displayname
         self._services= services
 
     @property
@@ -22,19 +22,12 @@ class User:
         self._email = email
 
     @property
-    def displayname(self):
-        return self._display_name
-    @displayname.setter
-    def displayname(self, dispname):
-        self._display_name = dispname
-        """
-    @property
-    def permissions(self):
-        return self._permission
-    @permissions.setter
-    def permissions(self, perm):
-        self._permissions = perm
-    """
+    def uid(self):
+        return self._uid
+    @uid.setter
+    def uid(self, key):
+        self._uid = key
+
     @property
     def services(self):
         return self._email
