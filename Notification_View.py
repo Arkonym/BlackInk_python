@@ -15,6 +15,9 @@ class NotificationWidget(Notification, BaseWidget):
         self._connection = connection
         if timestamp!='':
             self._timestamp_field = ControlLabel(timestamp)
+        else:
+            ts = datetime.now().timestamp()
+            self._timestamp_field = ControlLabel(datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
         self._symbol_field = ControlText('Company Symbol')
         self._price_field = ControlText('Current Price (Optional)')
         self._message_field = ControlTextArea('Advisory')
@@ -38,7 +41,8 @@ class NotificationWidget(Notification, BaseWidget):
             self._sendButton.value = self._close
 
 
-        self._formset =[' ', ('||', '_symbol_field', '||', ' '), '=',
+        self._formset =[' ', ('||', '_timestamp_field', '||', ' '),
+                        ('||', '_symbol_field', '||', ' '), '=',
                         ('||','_price_field', '||', ' '),
                         ('||', '_message_field', '||'),
                         ('||', '_sendButton', '||')]
