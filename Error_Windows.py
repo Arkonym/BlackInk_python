@@ -3,23 +3,14 @@ from pyforms.basewidget import BaseWidget
 from pyforms.controls import ControlButton
 
 
-class Error:
-    def __init__(self, Error_type=None):
-        self._type_err = Error_type
-        #self._message = str(Error_type)
-
-
-    @property
-    def readOut(self):
-        return "{0}".format(self._type_err)
 
 class ErrorWin(BaseWidget):
-    def __init__(self, Err_type= None ):
+    def __init__(self, Err_type= None , message=''):
         #Error.__init__(self)
         super().__init__('ERROR')
         self._ok = ControlButton('OK')
         self._ok.value = self._close
-        self._formset= [(' ', '||', str(Err_type), '||', ' '),(' ', '||',  '_ok', '||', ' ')]
+        self._formset= [(' ', '||', str(Err_type), '||', ' '),(str(message)), (' ', '||',  '_ok', '||', ' ')]
 
     def _close(self):
             close_win(self)
