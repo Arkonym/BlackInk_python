@@ -1,4 +1,5 @@
 import pyrebase
+from urllib.error import HTTPError
 from getpass import getpass
 from datetime import datetime
 import os
@@ -158,7 +159,7 @@ def user_dir(user, connection): #localId is persisten record key in firebase
     except:
         u = {"name":'', 'email':user['email']}
         connection['Database'].child("users").child(user['localId']).set(u, user['idToken'])
-        print('director created')
+        print('directory created')
 
 def pull_users(user, connection):
     if user=='':
@@ -171,7 +172,7 @@ def pull_users(user, connection):
         user_list=None
         try:
             user_list = connection['Database'].child("users").get().val()
-            print(user_list)
+            #print(user_list)
             if user_list==None:
                 raise Exception('No Users')
         except:
@@ -181,6 +182,42 @@ def pull_users(user, connection):
 
     return user_list
 
+def add_user(user, connection, new_user):
+    if user=='':
+        raise ValueError('User Invalid')
+        return
+    if connection=='':
+        raise ValueError('Connection Invalid')
+        return
+    else:
+        try:
+            connection['Database'].child('users').push(new_user, user['idToken'])
+        except:
+            raise HTTPError('Auth refused')
+
+def toggle_admin(user, connection, user_id):
+    if user=='':
+        raise ValueError('User Invalid')
+        return
+    if connection=='':
+        raise ValueError('Connection Invalid')
+        return
+    else:
+        users = connection['Database'].child("users").shallow().get()
+        admins = connection['Database'].child('admins').shallow().get(user['idToken'])
+        if user_id in users.val() and user_id not in admins.val():
+            try:
+                connection['Database'].child('admins').update({user_id: True}, user['idToken'])
+            except:
+                raise HTTPError('Auth refused')
+                return
+        elif user_id in admins.val():
+            try:
+                connection['Database'].child('admins').child(user_id).remove()
+            except:
+                raise HTTPError('Auth refused')
+                return
+        else: raise ValueError('User not found')
 
 
 def cut_email(user):
@@ -191,8 +228,7 @@ def cut_email(user):
 if __name__== "__main__":
     quit= False
     connection = db_connect()
-    user = login_manual(connection)
-    pull_users(user, connection)
-
+    user = login(connection, 'rsaitta@mail.csuchico.edu', 'Topgun01')
+    toggle_admin(user, connection, 'btna3jCd7IUsr0gflHAJl4FYg3D2')
     #while quit==False:
         #post_notification_manual(user, connection)
