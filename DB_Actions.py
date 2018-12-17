@@ -23,7 +23,7 @@ def db_connect():
 
 
 
-def login_manual(connection):
+def login_manual(connection):# pragma no cover
     email = input('Enter Your Email: ')
     if email == "quit":
         sys.exit()
@@ -45,6 +45,8 @@ def login(connection, email, password):
     password.replace("\t", "")
     try:
         user = connection['Auth'].sign_in_with_email_and_password(email, password)
+    except HTTPError:
+        raise ValueError("Email does not match a registered account")
     except:
         raise ValueError('Email or password invalid')
     if connection['Database'].child('admins').child(user['localId']).get(user['idToken']).val() == True:
@@ -57,7 +59,7 @@ def login(connection, email, password):
 
 
 
-def post_notification_manual(user, connection):
+def post_notification_manual(user, connection):# pragma no cover
     try:
         comp=input('Enter ticker symbol: ')
     except:
@@ -85,56 +87,51 @@ def post_notification_manual(user, connection):
 def post_notification(user, connection, notif):
     if notif.symbol=='':
         raise ValueError('Symbol Cannot Be Empty')
-        return
     if notif.price == '': notif.price = '0.00'
     if notif.message == '':
         raise ValueError('Message Cannot be Empty')
-        return
     else:
-        #email = user['email']
-        #userID = email.split('@')[0]
         userID = cut_email(user)
         notif = {"timestamp":{".sv": "timestamp"}, "symbol": notif.symbol, "price": notif.price, "message": notif.message, "author": userID}
         try:
             tmp =connection['Database'].child("notifications").push(notif, user['idToken'])
         except:
             raise ValueError('permission denied')
-            return
+        #print (tmp)
         return tmp
 
 def del_notification(user, connection, key):
-    if user=='':
+    if user=='' or user == None:
         raise ValueError('User Invalid')
-        return
-    if connection=='':
+    if connection=='' or user == None:
         raise ValueError('Connection Invalid')
-        return
+    if key=='' or key == None:
+        raise ValueError('Missing key')
     else:
         try:
-            connection['Database'].child("notifications").child(key).remove()
+            removed = connection['Database'].child("notifications").child(key).remove()
         except:
             raise ValueError("Key not found")
+        if removed == None or removed =='':
+            raise ValueError("No match found")
 
-def update_notification(user, connection, notif):
+def update_notification(user, connection, notif): #pragma no cover
     if user=='':
         raise ValueError('User Invalid')
-        return
     if connection=='':
         raise ValueError('Connection Invalid')
-        return
     else:
         try:
             connection['Database'].child("notifications").child(notif.key).update({"symbol": notif.symbol, "message": notif.message, "price": notif.price})
         except:
             raise ValueError("Woops. That didn't work")
 
+
 def pull_notifications(user, connection):
-    if user=='':
+    if user=='' or user == None:
         raise ValueError('User Invalid')
-        return
-    if connection=='':
+    if connection=='' or connection == None:
         raise ValueError('Connection Invalid')
-        return
     else:
         time = datetime
         notifList = []
@@ -145,8 +142,8 @@ def pull_notifications(user, connection):
         return notifList
 
 
-
-def user_dir(user, connection): #localId is persisten record key in firebase
+#not used
+def user_dir(user, connection): #pragma no cover
     userDir=[]
     try:
         userDir = connection['Database'].child("users").child(user['localId']).get(user['idToken']).val()
@@ -162,33 +159,25 @@ def user_dir(user, connection): #localId is persisten record key in firebase
         print('directory created')
 
 def pull_users(user, connection):
-    if user=='':
+    if user=='' or user ==None:
         raise ValueError('User Invalid')
-        return
-    if connection=='':
+    if connection=='' or connection ==None:
         raise ValueError('Connection Invalid')
-        return
     else:
         user_list=None
         try:
             user_list = connection['Database'].child("users").get().val()
-            #print(user_list)
             if user_list==None:
                 raise Exception('No Users')
         except:
             user_list=None
-        #for user in user_list:
-            #print (user_list[user])
-
     return user_list
 
-def add_user(user, connection, new_user):
+def add_user(user, connection, new_user): #pragma no cover
     if user=='':
         raise ValueError('User Invalid')
-        return
     if connection=='':
         raise ValueError('Connection Invalid')
-        return
     else:
         try:
             connection['Database'].child('users').push(new_user, user['idToken'])
@@ -196,27 +185,27 @@ def add_user(user, connection, new_user):
             raise HTTPError('Auth refused')
 
 def toggle_admin(user, connection, user_id):
-    if user=='':
+    if user=='' or user == None:
         raise ValueError('User Invalid')
-        return
-    if connection=='':
+    if connection=='' or user == None:
         raise ValueError('Connection Invalid')
-        return
+    if user_id == '' or user_id == None:
+        raise ValueError('Missing account key')
     else:
         users = connection['Database'].child("users").shallow().get()
         admins = connection['Database'].child('admins').shallow().get(user['idToken'])
-        if user_id in users.val() and user_id not in admins.val():
+        if user['localId']==user_id:
+            raise ValueError("Cannot remove self as admin")
+        elif user_id in users.val() and user_id not in admins.val():
             try:
                 connection['Database'].child('admins').update({user_id: True}, user['idToken'])
             except:
                 raise HTTPError('Auth refused')
-                return
         elif user_id in admins.val():
             try:
                 connection['Database'].child('admins').child(user_id).remove()
             except:
                 raise HTTPError('Auth refused')
-                return
         else: raise ValueError('User not found')
 
 
@@ -224,11 +213,15 @@ def cut_email(user):
     return user['email'].split('@')[0]
 
 
+from Notification import Notification
+if __name__== "__main__":#pragma no cover
 
-if __name__== "__main__":
     quit= False
     connection = db_connect()
     user = login(connection, 'rsaitta@mail.csuchico.edu', 'Topgun01')
-    toggle_admin(user, connection, 'btna3jCd7IUsr0gflHAJl4FYg3D2')
+    #toggle_admin(user, connection, 'btna3jCd7IUsr0gflHAJl4FYg3D2')
+    notif = Notification('', 'GOOGL', 0.00, 'Hello World')
+
+    post_notification(user, connection, notif)
     #while quit==False:
         #post_notification_manual(user, connection)

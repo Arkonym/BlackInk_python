@@ -1,10 +1,13 @@
 
+from datetime import datetime
 
-
-class Notification:
-    def __init__(self, timestamp, symbols, index, message, key=''):
+class Notification: #pragma no cover
+    def __init__(self, timestamp='', symbols='', index='', message='', key=''):
         self._key = key
-        self._timestamp = timestamp
+        if timestamp=='':
+            self._timestamp=datetime.now().timestamp()
+        else:
+            self._timestamp = timestamp
         self._symbol   = symbols
         self._price     = index
         self._message   =  message
@@ -46,7 +49,7 @@ class Notification:
         return "{0} {1} {2} {3} {4}".format(self._key, self._timestamp, self._symbol, self._price, self._message)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':#pragma no cover
     tmp = Notification('', 'AAPL', 0.00, 'hello world', '+=+')
     print(tmp.key)
     print(tmp.readOut)

@@ -1,6 +1,6 @@
 
 
-class User:
+class User: #pragma no cover
     def __init__(self, uid='', email='', name= '',  services=[]):
         self._uid = uid
         self._email = email
