@@ -16,7 +16,8 @@ class UserWidget(User, BaseWidget):
             self._editBtn = ControlButton('Edit')
             self._editBtn.value = self._edit
         elif flag=='new':
-            self._ediBtn = ControlButton('Save')
+            self._editBtn = ControlButton('Save')
+            self._editBtn.value() = self._save
         else:
             self._closeBtn= ControlButton('Close')
             self._closeBtn.value = self._close
