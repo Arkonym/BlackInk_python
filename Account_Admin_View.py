@@ -94,10 +94,7 @@ class AdminWidget(BaseWidget):
         pass
 
     def _update_user(self, account):
-        if account.changes[0]:
-            connection['Database'].child("users").child(account._uid).child("name").update(account.name)
-        if account.changes[1]:
-            connection['Database'].child("users").child(account._uid).child("services").update(account.services)
+        self._connection['Database'].child("users").child(account._uid).update({"name": account.name, "email": account.email, "services": account.services})
 
     def __admin_power(self):
         if self.parent!=None: self.parent.persist_login()

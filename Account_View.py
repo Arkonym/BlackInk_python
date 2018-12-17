@@ -11,13 +11,14 @@ class UserWidget(User, BaseWidget):
         BaseWidget.__init__(self, 'User')
         self._admin = admin
         self._connection = connection
+        self._flag = flag
         self.changes = [] #0 is name change, 1 is services change
         if flag=='edit':
             self._editBtn = ControlButton('Edit')
             self._editBtn.value = self._edit
         elif flag=='new':
             self._editBtn = ControlButton('Save')
-            self._editBtn.value() = self._save
+            self._editBtn.value = self._save
         else:
             self._closeBtn= ControlButton('Close')
             self._closeBtn.value = self._close
@@ -59,9 +60,9 @@ class UserWidget(User, BaseWidget):
             self.email = self._email_field.value
             self.services = self._services
             self.uid = self._uid_field.value
-            if flag=='edit':
+            if self._flag=='edit':
                 self.parent._update_user(self)
-            elif flag =='new':
+            elif self._flag =='new':
                 self.parent._add_User(self)
         self._close()
 
@@ -73,7 +74,6 @@ class UserWidget(User, BaseWidget):
         else:
             self._services_field.set_value(column, row,True)
             self._services[self._services_field.get_value(0, row)] = True
-        self.changes[1] =True
 
     def _close(self):
         close_win(self)

@@ -30,7 +30,7 @@ class User: #pragma no cover
 
     @property
     def services(self):
-        return self._email
+        return self._services
     @services.setter
     def services(self, servs):
         self._services = servs
