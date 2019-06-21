@@ -6,12 +6,12 @@ import os
 
 def db_connect():
     dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, 'auth_keys/blackincapp-firebase-adminsdk-8914t-13046da8cf.json')
+    filename = os.path.join(dirname, 'pathtoyourauthkey.json')
     config = {
     "apiKey": "AIzaSyDfkaO2XYX6w_vHFCwRuAxiKTwsWQ_mZRs",
-    "authDomain": "blackincapp.firebaseapp.com",
-    "databaseURL": "https://blackincapp.firebaseio.com",
-    "storageBucket": "blackincapp.appspot.com",
+    "authDomain": "yourapp.firebaseapp.com",
+    "databaseURL": "https://yourapp.firebaseio.com",
+    "storageBucket": "yourapp.appspot.com",
     ##Edit this line to point to whereever the auth key is stored
     "serviceAccount": filename
     }
