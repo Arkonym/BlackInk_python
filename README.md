@@ -1,3 +1,5 @@
+Project for Software Dev course @ CSU Chico. 
+
 Keys in commit history are deprecated and deauthorized. Generate new keys.
 
 # Python dependencies:
