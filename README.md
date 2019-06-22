@@ -1,3 +1,5 @@
+Keys in commit history are deprecated and deauthorized. Generate new keys.
+
 # Python dependencies:
 
 64bit Python 3.5 or newer
